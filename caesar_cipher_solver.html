@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Caesar Cipher Solver</h1>
+        <label for="shift">Shift:</label>
+        <input type="number" id="shift" value="3">
+        
+        <label for="inputText">Text to Decrypt:</label>
+        <textarea id="inputText" rows="4"></textarea>
+        
+        <button onclick="solveCipher()">Solve</button>
+        
+        <div class="result">
+            <label for="outputText">Decrypted Text:</label>
+            <textarea id="outputText" rows="4" readonly></textarea>
+        </div>
+    </div>
+    <script>
+        function solveCipher() {
+            const shift = parseInt(document.getElementById('shift').value);
+            const inputText = document.getElementById('inputText').value;
+            let outputText = '';
+
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                if (char.match(/[a-z]/i)) {
+                    const code = inputText.charCodeAt(i);
+                    if ((code >= 65) && (code <= 90)) {
+                        outputText += String.fromCharCode(((code - 65 - shift + 26) % 26) + 65);
+                    } else if ((code >= 97) && (code <= 122)) {
+                        outputText += String.fromCharCode(((code - 97 - shift + 26) % 26) + 97);
+                    }
+                } else {
+                    outputText += char;
+                }
+            }
+
+            document.getElementById('outputText').value = outputText;
+        }
+    </script>
+</body>
+</html>
