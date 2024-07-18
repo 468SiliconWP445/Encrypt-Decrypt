@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypt/Decrypt Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .options {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #encryptedOutput, #decryptedOutput {
+            margin-top: 20px;
+            font-weight: bold;
+            white-space: pre-wrap; /* Preserve whitespace formatting */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Encrypt/Decrypt Message</h1>
+        <div class="options">
+            <button onclick="showEncrypt()">Generate Message and Code</button>
+            <button onclick="showDecrypt()">Decipher Message and Code</button>
+        </div>
+        <div id="encryptSection" class="section" style="display:none;">
+            <h2>Generate Message and Code</h2>
+            <textarea id="plainMessage" placeholder="Enter your message here"></textarea>
+            <button onclick="encryptMessage()">Encrypt</button>
+            <div id="encryptedOutput"></div>
+            <button id="copyButton" style="display:none;" onclick="copyToClipboard()">Copy Encrypted Message</button>
+        </div>
+        <div id="decryptSection" class="section" style="display:none;">
+            <h2>Decipher Message and Code</h2>
+            <textarea id="cipherMessage" placeholder="Enter the encrypted message here"></textarea>
+            <input type="number" id="decryptCode" placeholder="Enter the code">
+            <button onclick="decryptMessage()">Decrypt</button>
+            <div id="decryptedOutput"></div>
+        </div>
+    </div>
+    <script>
+        function showEncrypt() {
+            document.getElementById('encryptSection').style.display = 'block';
+            document.getElementById('decryptSection').style.display = 'none';
+        }
+
+        function showDecrypt() {
+            document.getElementById('decryptSection').style.display = 'block';
+            document.getElementById('encryptSection').style.display = 'none';
+        }
+
+        function encryptMessage() {
+            const plainMessage = document.getElementById('plainMessage').value;
+            const code = plainMessage.charCodeAt(0); // ASCII value of the first character
+            let encryptedMessage = '';
+
+            for (let i = 0; i < plainMessage.length; i++) {
+                const charCode = plainMessage.charCodeAt(i);
+                let newCharCode;
+
+                if (charCode >= 65 && charCode <= 90) { // Uppercase
+                    newCharCode = ((charCode - 65 + code) % 26) + 65;
+                } else if (charCode >= 97 && charCode <= 122) { // Lowercase
+                    newCharCode = ((charCode - 97 + code) % 26) + 97;
+                } else {
+                    newCharCode = charCode; // Non-alphabetic characters remain unchanged
+                }
+
+                encryptedMessage += String.fromCharCode(newCharCode);
+            }
+
+            document.getElementById('encryptedOutput').innerText = `Encrypted Message: ${encryptedMessage}\nCode: ${code}`;
+            document.getElementById('copyButton').style.display = 'inline-block';
+        }
+
+        function decryptMessage() {
+            const cipherMessage = document.getElementById('cipherMessage').value;
+            const code = parseInt(document.getElementById('decryptCode').value);
+            let decryptedMessage = '';
+
+            for (let i = 0; i < cipherMessage.length; i++) {
+                const charCode = cipherMessage.charCodeAt(i);
+                let newCharCode;
+
+                if (charCode >= 65 && charCode <= 90) { // Uppercase
+                    newCharCode = ((charCode - 65 - code + 26) % 26) + 65;
+                } else if (charCode >= 97 && charCode <= 122) { // Lowercase
+                    newCharCode = ((charCode - 97 - code + 26) % 26) + 97;
+                } else {
+                    newCharCode = charCode; // Non-alphabetic characters remain unchanged
+                }
+
+                decryptedMessage += String.fromCharCode(newCharCode);
+            }
+
+            document.getElementById('decryptedOutput').innerText = `Decrypted Message: ${decryptedMessage}`;
+        }
+
+        function copyToClipboard() {
+            const encryptedText = document.getElementById('encryptedOutput').innerText.split('\n')[0].replace('Encrypted Message: ', '');
+            navigator.clipboard.writeText(encryptedText).then(() => {
+                alert('Encrypted message copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
